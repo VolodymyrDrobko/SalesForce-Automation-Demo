@@ -19,35 +19,35 @@ public class TestListener implements ITestListener {
         setTestDataLanguage(testDataLanguage);
         String browserName = Optional.ofNullable(Configuration.getBrowser())
                 .orElse(DEFAULT_BROWSER);
-        ReportManager.setUpReport(suiteName, testDataLanguage, browserName);
+        ExtentHtmlReport.setUpExtentHtmlReport(suiteName, testDataLanguage, browserName);
     }
 
     @Override
     public void onTestStart(ITestResult iTestResult) {
         String testCaseName = iTestResult.getMethod().getMethodName();
-        ReportManager.createReport(testCaseName);
-        System.out.println("Test case is started - " + testCaseName);
+        ExtentHtmlReport.createExtentHtmlReport(testCaseName);
+        ReportManager.log(Status.INFO, "Test case is started - " + testCaseName);
     }
 
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
-        ReportManager.log(Status.PASS, iTestResult.getMethod().getMethodName());
-        System.out.println(iTestResult.getMethod().getMethodName() + " - PASSED");
-        ReportManager.flushReport();
+        String testCaseName = iTestResult.getMethod().getMethodName();
+        ReportManager.log(Status.PASS, testCaseName + " - PASSED SUCCESSFUL");
+        ExtentHtmlReport.flushReport();
     }
 
     @Override
     public void onTestFailure(ITestResult iTestResult) {
-        ReportManager.log(Status.FAIL, iTestResult.getMethod().getMethodName());
-        System.out.println(iTestResult.getMethod().getMethodName() + " >>>>> FAILED");
-        ReportManager.flushReport();
+        String testCaseName = iTestResult.getMethod().getMethodName();
+        ReportManager.log(Status.FAIL, testCaseName + " >>>>> FAILED");
+        ExtentHtmlReport.flushReport();
     }
 
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
-        ReportManager.log(Status.SKIP, iTestResult.getMethod().getMethodName());
-        System.out.println(iTestResult.getMethod().getMethodName() + " >>>>> SKIPPED");
-        ReportManager.flushReport();
+        String testCaseName = iTestResult.getMethod().getMethodName();
+        ExtentHtmlReport.log(Status.SKIP, testCaseName + " >>>>> SKIPPED");
+        ExtentHtmlReport.flushReport();
     }
 
     @Override
@@ -57,6 +57,6 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onFinish(ITestContext iTestContext) {
-        ReportManager.flushReport();
+        ExtentHtmlReport.flushReport();
     }
 }

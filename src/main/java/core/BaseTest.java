@@ -9,7 +9,6 @@ import org.testng.annotations.BeforeTest;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static core.Configuration.setTestDataLanguage;
 import static utils.Constants.DEFAULT_URL;
 
 public class BaseTest {

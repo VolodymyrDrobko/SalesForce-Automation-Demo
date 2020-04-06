@@ -32,7 +32,7 @@ public class SalesForceLightningHomePageBO extends BasePageBO {
 
     public SalesForceLightningHomePageBO verifySalesForceProfileUserName(String profileUserName) {
         reportLogger.log(Status.INFO, "Verify Sales Force Profile user name, expected - " + profileUserName);
-        String actualProfileUserName = salesForceLightningHomePage.getProfileUserName();
+        String actualProfileUserName = "";//salesForceLightningHomePage.getProfileUserName();
         softAssert.assertEquals(actualProfileUserName, profileUserName,
                 "Sales Force Profile user name, found - " + actualProfileUserName);
         return this;

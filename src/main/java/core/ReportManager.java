@@ -2,33 +2,13 @@ package core;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import io.qameta.allure.Step;
 
 public class ReportManager {
-    static ExtentHtmlReport reportLogger = new ExtentHtmlReport();
-    public static ThreadLocal<ExtentTest> reportLoggerPool = new ThreadLocal<>();
 
-    public static void setUpReport(String suiteName, String testDataLanguage, String browserName) {
-        reportLogger.setUpExtentHtmlReport(suiteName, testDataLanguage, browserName);
-    }
-
-    public static void createReport(String testCaseName) {
-        setReport(reportLogger.createExtentHtmlReport(testCaseName));
-        log(Status.INFO,"Test started - " + testCaseName);
-    }
-
-    public static void flushReport() {
-        reportLogger.flushReport();
-    }
-
-    public static void log(Object status, String message) {
-        reportLogger.log(getReportLogger(), (Status)status, message);
-    }
-
-    public static ExtentTest getReportLogger() {
-        return reportLoggerPool.get();
-    }
-
-    public static void setReport(ExtentTest reportLogger) {
-        reportLoggerPool.set(reportLogger);
+    @Step("{message}")
+    public static void log(Status logStatus, String message) {
+        LoggerManager.log(message);
+        ExtentHtmlReport.log(logStatus, message);
     }
 }

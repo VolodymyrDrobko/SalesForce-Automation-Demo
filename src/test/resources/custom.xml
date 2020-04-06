@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Sanity" configfailurepolicy="continue"
-           parallel="methods" thread-count="2" verbose="1">
+<suite name="Sanity" configfailurepolicy="continue">
+<!--           parallel="methods" thread-count="2" verbose="1">-->
     <parameter name="language" value="EN"/>
     <parameter name="browserName" value="Chrome"/>
     <listeners>
@@ -9,14 +9,14 @@
     </listeners>
     <test name="Sanity">
         <classes>
-            <class name="SalesForceInterfaceLanguageTest">
-                <methods>
-                    <include name="verifyUserInterfaceLanguage"/>
-                </methods>
-            </class>
             <class name="SalesForceServiceConsoleFunctionalityTest">
                 <methods>
                     <include name="verifyServiceConsoleFunctionality"/>
+                </methods>
+            </class>
+            <class name="SalesForceInterfaceLanguageTest">
+                <methods>
+                    <include name="verifyServiceConsoleLanguage"/>
                 </methods>
             </class>
         </classes>

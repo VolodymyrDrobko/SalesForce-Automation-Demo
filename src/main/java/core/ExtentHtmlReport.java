@@ -11,52 +11,57 @@ import java.io.File;
 import java.io.IOException;
 
 public class ExtentHtmlReport {
-    private String reportName, reportPathName;
+    private static String reportName, reportPathName;
     private static int testCaseCounter = 0;
+    public static ThreadLocal<ExtentTest> reportLoggerPool = new ThreadLocal<>();
 
     static ExtentReports report;
-    ExtentHtmlReporter htmlReporter;
+    static ExtentHtmlReporter htmlReporter;
 
-    public ExtentHtmlReport setUpExtentHtmlReport(String testName, String testDataLanguage, String browserName) {
+    public static void setUpExtentHtmlReport(String testName, String testDataLanguage, String browserName) {
             reportName = "Report-" + testName + "-" + testDataLanguage + "-" + browserName + ".html";
             reportPathName = System.getProperty("user.dir") + File.separator + "Reports" + File.separator + reportName;
             htmlReporter = new ExtentHtmlReporter(reportPathName);
 
             report = new ExtentReports();
             report.attachReporter(htmlReporter);
-        return this;
     }
 
-    public void log(ExtentTest report, Status logStatus, String message) {
+    public static void log(Status logStatus, String message) {
+        ExtentTest report = reportLoggerPool.get();
         if (logStatus == Status.FAIL || logStatus == Status.FATAL)
-            createScreenshot(report, message);
+            createScreenshot(report, message.replace(">", ""));
         else if (logStatus == Status.SKIP)
-            report.log(logStatus, message + " >>>>> SKIPPED");
+            report.log(logStatus, message);
         else if (logStatus == Status.PASS)
-            report.log(logStatus, message + " - PASSED SUCCESSFULLY");
+            report.log(logStatus, message);
         else
             report.log(logStatus, message);
     }
 
-    private void createScreenshot(ExtentTest report, String message) {
+    private static void createScreenshot(ExtentTest report, String message) {
         String date = Utils.getCurrentDate();
         String screenShotName = message.replaceAll(" ", "_") + date + ".png";
         String screenShotPath = System.getProperty("user.dir") + File.separator + "Reports" + File.separator + "Screenshots" + File.separator;
         String screenShotFileWithPath = screenShotPath + screenShotName;
         ScreenShotManager.takeScreenshot(DriverManager.getDriver(), screenShotFileWithPath);
         try {
-            report.fail(message + " >>>>> FAILED", MediaEntityBuilder.createScreenCaptureFromPath("Screenshots" + File.separator + screenShotName).build());
+            report.fail(message, MediaEntityBuilder.createScreenCaptureFromPath("Screenshots" + File.separator + screenShotName).build());
         } catch (IOException e) {
             report.fail(message);
         }
     }
 
-    public ExtentTest createExtentHtmlReport(String testCaseName) {
+    public static void createExtentHtmlReport(String testCaseName) {
         testCaseCounter++;
         ExtentTest reportLogger = report.createTest(testCaseCounter + ". " + testCaseName);
-        return reportLogger;
+        reportLoggerPool.set(reportLogger);
     }
 
-    public void flushReport() {report.flush();}
+    public static void flushReport() {report.flush();}
+
+    public static ExtentTest getReporter() {
+        return reportLoggerPool.get();
+    }
 
 }
